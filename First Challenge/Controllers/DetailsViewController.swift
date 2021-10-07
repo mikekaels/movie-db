@@ -271,7 +271,7 @@ extension DetailsViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! moreLikeTheseCell
-        cell.backgroundColor = .red
+//        cell.backgroundColor = .red
         cell.image.load(url: URL(string: "http://image.tmdb.org/t/p/w500\(self.moreLikeTheseUrl[indexPath.row].0)")!)
         return cell
     }
@@ -294,7 +294,7 @@ class moreLikeTheseCell: UICollectionViewCell {
     
     let image: CustomImageView = {
         let image = CustomImageView()
-        image.image = UIImage(named: "dog")
+//        image.image = UIImage(named: "dog")
         image.contentMode = UIView.ContentMode.scaleAspectFill
         image.translatesAutoresizingMaskIntoConstraints = false
         return image

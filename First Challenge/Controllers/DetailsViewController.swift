@@ -144,28 +144,37 @@ class DetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("::VIEW DID LOAD::")
+        viewSetup()
         view.backgroundColor = .systemBackground
-        
         fetchMovieDetail()
 
         playButton.setTitle("Play", for: .normal)
         downloadButton.setTitle("Download", for: .normal)
         movieGenres.text = "Genre: Action, Thriler, Adventure, Science Fiction"
-        viewSetup()
         
         collectionView?.dataSource = self
         collectionView?.delegate = self
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("::VIEW WILL APPEAR::")
+    }
+    
     func fetchMovieDetail() {
         detailManager.fetchMovies(movieId: self.movieId) { result in
-            print(result)
-            self.movieDetail = result
-            self.movieRated.text = result.adult ? "Adult" : ""
-            self.poster.load(url: URL(string: "http://image.tmdb.org/t/p/w500\(result.movieImageUrl)")!)
-            self.movieRating.text = String(result.voteAverage)
-            self.movieGenres.text = "Genre: \(result.genres.map{$0.name }.map{String($0)}.joined(separator: ", "))"
-            self.collectionView?.reloadData()
+            print("RESULT: ", result)
+            DispatchQueue.main.async {
+                self.movieDetail = result
+                self.movieTitle.text = result.movieTitle
+                self.movieOverview.text = result.movieOverview
+                self.movieRated.text = result.adult ? "Adult" : ""
+                self.poster.load(url: URL(string: "http://image.tmdb.org/t/p/w500\(result.movieImageUrl)")!)
+                self.movieRating.text = String(result.voteAverage)
+                self.movieGenres.text = "Genre: \(result.genres.map{$0.name }.map{String($0)}.joined(separator: ", "))"
+                self.collectionView?.reloadData()
+            }
         }
     }
     
@@ -266,12 +275,14 @@ extension DetailsViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let vc = DetailsViewController()
-//        vc.movieId = self.moreLikeTheseUrl[indexPath.row].1
-////        navigationController?.pushViewController(self, animated: true)
-//        vc.moreLikeTheseUrl = self.moreLikeTheseUrl
-//        self.show(vc, sender: nil)
-//        self.navigationController?.viewControllers = [vc]
+        
+        let vc = DetailsViewController()
+        vc.movieId = self.moreLikeTheseUrl[indexPath.row].1
+        vc.moreLikeTheseUrl = self.moreLikeTheseUrl
+        print("INDEX: ",indexPath.row)
+        print("MOVIE: ",self.moreLikeTheseUrl[indexPath.row].1, self.moreLikeTheseUrl[indexPath.row].0)
+        print("MORE LIKE THIS: ",self.moreLikeTheseUrl)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

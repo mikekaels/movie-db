@@ -108,19 +108,18 @@ extension DiscoverViewController: UICollectionViewDelegate, UICollectionViewData
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.row)
         let vc = DetailsViewController()
-        vc.posterUrl = self.movies[indexPath.row].movieImageUrl
-        vc.movieTitle.text = self.movies[indexPath.row].movieTitle
-        vc.movieOverview.text = self.movies[indexPath.row].movieOverview
+//        vc.posterUrl = self.movies[indexPath.row].movieImageUrl
+//        vc.movieTitle.text = self.movies[indexPath.row].movieTitle
+//        vc.movieOverview.text = self.movies[indexPath.row].movieOverview
         vc.movieId = self.movies[indexPath.row].movieId
         vc.moreLikeTheseUrl = [
             (self.movies[indexPath.row + 1].movieImageUrl, self.movies[indexPath.row + 1].movieId),
-            (self.movies[indexPath.row + 2].movieImageUrl, self.movies[indexPath.row + 1].movieId),
-            (self.movies[indexPath.row + 3].movieImageUrl, self.movies[indexPath.row + 1].movieId),
-            (self.movies[indexPath.row + 4].movieImageUrl, self.movies[indexPath.row + 1].movieId),
-            (self.movies[indexPath.row + 5].movieImageUrl, self.movies[indexPath.row + 1].movieId),
-            (self.movies[indexPath.row + 6].movieImageUrl, self.movies[indexPath.row + 1].movieId)
+            (self.movies[indexPath.row + 2].movieImageUrl, self.movies[indexPath.row + 2].movieId),
+            (self.movies[indexPath.row + 3].movieImageUrl, self.movies[indexPath.row + 3].movieId),
+            (self.movies[indexPath.row + 4].movieImageUrl, self.movies[indexPath.row + 4].movieId),
+            (self.movies[indexPath.row + 5].movieImageUrl, self.movies[indexPath.row + 5].movieId),
+            (self.movies[indexPath.row + 6].movieImageUrl, self.movies[indexPath.row + 6].movieId)
         ]
         navigationController?.pushViewController(vc, animated: true)
     }

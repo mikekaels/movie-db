@@ -68,7 +68,7 @@ class DiscoverViewController: UIViewController {
     
     func collectionViewSetup() {
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 150, right: 20)
+        layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 100, right: 20)
         layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 2.4,
                                  height: UIScreen.main.bounds.width / 1.7)
         layout.minimumLineSpacing = 20
@@ -83,7 +83,6 @@ class DiscoverViewController: UIViewController {
         myCollectionView?.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0).isActive = true
         myCollectionView?.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0).isActive = true
         myCollectionView?.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
-        
     }
 }
 

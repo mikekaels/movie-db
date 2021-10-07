@@ -93,25 +93,15 @@ extension DiscoverViewController: UICollectionViewDelegate, UICollectionViewData
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        //        if currentPage < totalPage && indexPath.row == movies.count - 1 {
-        //            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LoadingCell", for: indexPath) as! LoadingCell
-        //            cell.spinner.startAnimating()
-        //            return cell
-        //        } else {
+
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionCell", for: indexPath) as! MovieCell
         cell.title.text = self.movies[indexPath.row].movieTitle
-        cell.image.load(url: URL(string: "http://image.tmdb.org/t/p/w500\(self.movies[indexPath.row].movieImageUrl)")!)
+        cell.image.loadImageUsingUrlString(urlString: "http://image.tmdb.org/t/p/w500\(self.movies[indexPath.row].movieImageUrl)")
         return cell
-        //        }
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = DetailsViewController()
-//        vc.posterUrl = self.movies[indexPath.row].movieImageUrl
-//        vc.movieTitle.text = self.movies[indexPath.row].movieTitle
-//        vc.movieOverview.text = self.movies[indexPath.row].movieOverview
         vc.movieId = self.movies[indexPath.row].movieId
         vc.moreLikeTheseUrl = [
             (self.movies[indexPath.row + 1].movieImageUrl, self.movies[indexPath.row + 1].movieId),
@@ -147,8 +137,8 @@ class MovieCell: UICollectionViewCell {
         return sv
     }()
     
-    var image: UIImageView = {
-        let image = UIImageView()
+    var image: CustomImageView = {
+        let image = CustomImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
@@ -229,17 +219,4 @@ class LoadingCell: UICollectionViewCell {
     }
 }
 
-extension UIImageView {
-    func load(url: URL) {
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                    }
-                }
-            }
-        }
-    }
-}
 

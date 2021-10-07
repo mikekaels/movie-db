@@ -17,8 +17,8 @@ class DetailsViewController: UIViewController {
     
     var moreLikeTheseUrl: [(String, Int)] = [(String, Int)]()
     
-    let poster: UIImageView = {
-        let image = UIImageView()
+    let poster: CustomImageView = {
+        let image = CustomImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = UIView.ContentMode.scaleAspectFill
         return image
@@ -170,7 +170,9 @@ class DetailsViewController: UIViewController {
                 self.movieTitle.text = result.movieTitle
                 self.movieOverview.text = result.movieOverview
                 self.movieRated.text = result.adult ? "Adult" : ""
-                self.poster.load(url: URL(string: "http://image.tmdb.org/t/p/w500\(result.movieImageUrl)")!)
+//                self.poster.load(url: URL(string: "http://image.tmdb.org/t/p/w500\(result.movieImageUrl)")!)
+//                self.poster.downloaded(from: "http://image.tmdb.org/t/p/w500\(result.movieImageUrl)")
+                self.poster.loadImageUsingUrlString(urlString: "http://image.tmdb.org/t/p/w500\(result.movieImageUrl)")
                 self.movieRating.text = String(result.voteAverage)
                 self.movieGenres.text = "Genre: \(result.genres.map{$0.name }.map{String($0)}.joined(separator: ", "))"
                 self.collectionView?.reloadData()
@@ -290,8 +292,8 @@ extension DetailsViewController: UICollectionViewDelegate, UICollectionViewDataS
 class moreLikeTheseCell: UICollectionViewCell {
     
     
-    let image: UIImageView = {
-        let image = UIImageView()
+    let image: CustomImageView = {
+        let image = CustomImageView()
         image.image = UIImage(named: "dog")
         image.contentMode = UIView.ContentMode.scaleAspectFill
         image.translatesAutoresizingMaskIntoConstraints = false

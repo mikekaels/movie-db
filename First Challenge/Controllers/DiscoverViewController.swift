@@ -18,11 +18,37 @@ class DiscoverViewController: UIViewController {
     var genreId: Int = 99
     var movies: [MovieModel] = [MovieModel]()
     
+    var spinerView: UIView = {
+       let view = UIView()
+//        view.backgroundColor = .red
+        view.isUserInteractionEnabled = false
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    var spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView()
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.startAnimating()
+        spinner.isHidden = true
+        return spinner //90.960
+    }()
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
         fetchMovies(currentPage: self.currentPage)
         collectionViewSetup()
+        
+        view.addSubview(spinerView)
+        spinerView.topAnchor.constraint(equalTo: myCollectionView!.bottomAnchor, constant: -UIScreen.main.bounds.height/5).isActive = true
+        spinerView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
+        spinerView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/5).isActive = true
+        
+        spinerView.addSubview(spinner)
+        spinner.centerXAnchor.constraint(equalTo: spinerView.centerXAnchor).isActive = true
+        spinner.centerYAnchor.constraint(equalTo: spinerView.centerYAnchor).isActive = true
+        
         myCollectionView?.dataSource = self
         myCollectionView?.delegate = self
     }
@@ -47,11 +73,17 @@ class DiscoverViewController: UIViewController {
                                  height: UIScreen.main.bounds.width / 1.7)
         layout.minimumLineSpacing = 20
         
-        myCollectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
+        myCollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        self.view.addSubview(myCollectionView!)
         myCollectionView?.register(MovieCell.self, forCellWithReuseIdentifier: "CollectionCell")
         myCollectionView?.register(LoadingCell.self, forCellWithReuseIdentifier: "LoadingCell")
         myCollectionView?.backgroundColor = UIColor.systemBackground
-        self.view = myCollectionView
+        myCollectionView?.translatesAutoresizingMaskIntoConstraints = false
+        myCollectionView?.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
+        myCollectionView?.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 0).isActive = true
+        myCollectionView?.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0).isActive = true
+        myCollectionView?.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0).isActive = true
+        
     }
 }
 
@@ -95,9 +127,11 @@ extension DiscoverViewController: UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if currentPage < totalPage && indexPath.row == movies.count - 1 {
+            self.spinner.isHidden = false
             self.currentPage += 1
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.fetchMovies(currentPage: self.currentPage)
+                self.spinner.isHidden = true
             }
         }
     }

@@ -102,14 +102,8 @@ extension DiscoverViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = DetailsViewController()
         vc.movieId = self.movies[indexPath.row].movieId
-        vc.moreLikeTheseUrl = [
-            (self.movies[indexPath.row + 1].movieImageUrl, self.movies[indexPath.row + 1].movieId),
-            (self.movies[indexPath.row + 2].movieImageUrl, self.movies[indexPath.row + 2].movieId),
-            (self.movies[indexPath.row + 3].movieImageUrl, self.movies[indexPath.row + 3].movieId),
-            (self.movies[indexPath.row + 4].movieImageUrl, self.movies[indexPath.row + 4].movieId),
-            (self.movies[indexPath.row + 5].movieImageUrl, self.movies[indexPath.row + 5].movieId),
-            (self.movies[indexPath.row + 6].movieImageUrl, self.movies[indexPath.row + 6].movieId)
-        ]
+        vc.moreLikeTheseUrl = getRandomMoreLikeThis()
+        vc.movies = self.movies
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -122,6 +116,20 @@ extension DiscoverViewController: UICollectionViewDelegate, UICollectionViewData
                 self.spinner.isHidden = true
             }
         }
+    }
+    
+    func getRandomMoreLikeThis() -> [(String, Int)]  {
+        var moreLikeTheseUrl: [(String, Int)] = [(String, Int)]()
+        while moreLikeTheseUrl.count < 7 {
+            let randomIndex = Int.random(in: 0...movies.count - 1)
+            
+            if let index = moreLikeTheseUrl.firstIndex(where: {$0.1 == self.movies[randomIndex].movieId}) {
+                moreLikeTheseUrl.remove(at: index)
+            }
+            
+            moreLikeTheseUrl.append((self.movies[randomIndex].movieImageUrl , self.movies[randomIndex].movieId))
+        }
+        return moreLikeTheseUrl
     }
 }
 

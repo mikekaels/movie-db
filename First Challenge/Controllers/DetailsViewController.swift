@@ -16,6 +16,7 @@ class DetailsViewController: UIViewController {
     var movieDetail: MovieDetailModel?
     
     var moreLikeTheseUrl: [(String, Int)] = [(String, Int)]()
+    var movies: [MovieModel] = [MovieModel]()
     
     let poster: CustomImageView = {
         let image = CustomImageView()
@@ -145,13 +146,14 @@ class DetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("::VIEW DID LOAD::")
+        fetchMovieDetail()
         viewSetup()
         view.backgroundColor = .systemBackground
-        fetchMovieDetail()
-
         playButton.setTitle("Play", for: .normal)
         downloadButton.setTitle("Download", for: .normal)
         movieGenres.text = "Genre: Action, Thriler, Adventure, Science Fiction"
+        
+    
         
         collectionView?.dataSource = self
         collectionView?.delegate = self
@@ -159,8 +161,9 @@ class DetailsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("::VIEW WILL APPEAR::")
     }
+    
+    
     
     func fetchMovieDetail() {
         detailManager.fetchMovies(movieId: self.movieId) { result in
@@ -170,8 +173,6 @@ class DetailsViewController: UIViewController {
                 self.movieTitle.text = result.movieTitle
                 self.movieOverview.text = result.movieOverview
                 self.movieRated.text = result.adult ? "Adult" : ""
-//                self.poster.load(url: URL(string: "http://image.tmdb.org/t/p/w500\(result.movieImageUrl)")!)
-//                self.poster.downloaded(from: "http://image.tmdb.org/t/p/w500\(result.movieImageUrl)")
                 self.poster.loadImageUsingUrlString(urlString: "http://image.tmdb.org/t/p/w500\(result.movieImageUrl)")
                 self.movieRating.text = String(result.voteAverage)
                 self.movieGenres.text = "Genre: \(result.genres.map{$0.name }.map{String($0)}.joined(separator: ", "))"
@@ -271,20 +272,33 @@ extension DetailsViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! moreLikeTheseCell
-//        cell.backgroundColor = .red
-        cell.image.load(url: URL(string: "http://image.tmdb.org/t/p/w500\(self.moreLikeTheseUrl[indexPath.row].0)")!)
+        
+        cell.image.loadImageUsingUrlString(urlString: "http://image.tmdb.org/t/p/w500\(self.moreLikeTheseUrl[indexPath.row].0)")
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         let vc = DetailsViewController()
+        
+        vc.moreLikeTheseUrl = getRandomMoreLikeThis()
+        vc.movies = self.movies
+        
         vc.movieId = self.moreLikeTheseUrl[indexPath.row].1
-        vc.moreLikeTheseUrl = self.moreLikeTheseUrl
-        print("INDEX: ",indexPath.row)
-        print("MOVIE: ",self.moreLikeTheseUrl[indexPath.row].1, self.moreLikeTheseUrl[indexPath.row].0)
-        print("MORE LIKE THIS: ",self.moreLikeTheseUrl)
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func getRandomMoreLikeThis() -> [(String, Int)]  {
+        var moreLikeTheseUrl: [(String, Int)] = [(String, Int)]()
+        while moreLikeTheseUrl.count < 7 {
+            let randomIndex = Int.random(in: 0...movies.count - 1)
+            
+            if let index = moreLikeTheseUrl.firstIndex(where: {$0.1 == self.movies[randomIndex].movieId}) {
+                moreLikeTheseUrl.remove(at: index)
+            }
+            
+            moreLikeTheseUrl.append((self.movies[randomIndex].movieImageUrl , self.movies[randomIndex].movieId))
+        }
+        return moreLikeTheseUrl
     }
 }
 
